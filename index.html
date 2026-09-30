@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minahasa Quest — Petualangan Sejarah Interaktif</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ LOADING SCREEN ============ -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-content">
+    <div class="loading-emblem">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="loadGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#22d3ee"/>
+            <stop offset="100%" stop-color="#f59e0b"/>
+          </linearGradient>
+        </defs>
+        <circle cx="50" cy="50" r="42" fill="none" stroke="url(#loadGrad)" stroke-width="3" stroke-dasharray="8 6" class="spin-ring"/>
+        <path d="M 50 20 L 55 45 L 80 50 L 55 55 L 50 80 L 45 55 L 20 50 L 45 45 Z" fill="url(#loadGrad)"/>
+      </svg>
+    </div>
+    <h1 class="loading-title">MINAHASA QUEST</h1>
+    <p class="loading-sub">Memuat petualangan sejarah...</p>
+    <div class="loading-bar"><div class="loading-bar-fill" id="loadingBar"></div></div>
+  </div>
+</div>
+
+<!-- ============ CUSTOM CURSOR ============ -->
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- ============ PARTICLE BACKGROUND ============ -->
+<div class="particles-bg" id="particlesBg"></div>
+
+<!-- ============ NAVBAR ============ -->
+<nav class="game-nav">
+  <div class="nav-container">
+    <a href="#heroSection" class="game-logo">
+      <div class="logo-emblem">
+        <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#22d3ee"/>
+              <stop offset="100%" stop-color="#f59e0b"/>
+            </linearGradient>
+          </defs>
+          <polygon points="30,5 38,22 56,22 42,34 48,52 30,42 12,52 18,34 4,22 22,22" fill="url(#logoGrad)" opacity="0.9"/>
+          <circle cx="30" cy="30" r="6" fill="#0b1120"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <span class="logo-main">MINAHASA</span>
+        <span class="logo-sub">QUEST</span>
+      </div>
+    </a>
+
+    <div class="nav-menu">
+      <button class="nav-item active" data-nav="home">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Beranda</span>
+      </button>
+      <button class="nav-item" data-nav="materi">
+        <span class="nav-icon">📜</span>
+        <span class="nav-label">Materi</span>
+      </button>
+      <button class="nav-item" data-nav="quiz">
+        <span class="nav-icon">⚔️</span>
+        <span class="nav-label">Kuis</span>
+      </button>
+    </div>
+
+    <div class="nav-stats">
+      <div class="stat-chip">
+        <span class="stat-icon">⭐</span>
+        <span class="stat-value" id="xpValue">0</span>
+        <span class="stat-label">XP</span>
+      </div>
+      <div class="stat-chip">
+        <span class="stat-icon">🏆</span>
+        <span class="stat-value" id="levelValue">1</span>
+        <span class="stat-label">Level</span>
+      </div>
+      <button class="audio-btn" id="audioBtn" onclick="toggleAudio()" title="Musik On/Off">
+        <span class="audio-icon" id="audioIcon">🔇</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO SECTION ============ -->
+<section class="hero-section" id="heroSection">
+  <div class="hero-bg">
+    <div class="hero-sky"></div>
+    <div class="hero-stars" id="heroStars"></div>
+
+    <svg class="hero-mountains" viewBox="0 0 1440 500" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="mountainGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1e293b"/>
+          <stop offset="100%" stop-color="#0b1120"/>
+        </linearGradient>
+        <linearGradient id="volcanoGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#7c2d12"/>
+          <stop offset="100%" stop-color="#0b1120"/>
+        </linearGradient>
+      </defs>
+      <path d="M 0 400 L 100 320 L 200 350 L 320 250 L 400 300 L 500 200 L 600 280 L 720 180 L 820 260 L 900 220 L 1000 300 L 1100 240 L 1200 320 L 1320 260 L 1440 340 L 1440 500 L 0 500 Z" fill="url(#mountainGrad)"/>
+      <path d="M 680 200 L 720 180 L 760 200 L 740 220 L 700 220 Z" fill="url(#volcanoGrad)"/>
+      <ellipse cx="720" cy="170" rx="40" ry="15" fill="#dc2626" opacity="0.3"/>
+      <ellipse cx="730" cy="140" rx="30" ry="12" fill="#f59e0b" opacity="0.2"/>
+    </svg>
+
+    <div class="hero-ocean">
+      <div class="wave wave-1"></div>
+      <div class="wave wave-2"></div>
+      <div class="wave wave-3"></div>
+    </div>
+
+    <div class="hero-ship">
+      <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="shipGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#92400e"/>
+            <stop offset="100%" stop-color="#451a03"/>
+          </linearGradient>
+          <linearGradient id="sailGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fef3c7"/>
+            <stop offset="100%" stop-color="#d4a017"/>
+          </linearGradient>
+        </defs>
+        <path d="M 20 110 L 180 110 L 160 130 L 40 130 Z" fill="url(#shipGrad)"/>
+        <rect x="98" y="20" width="4" height="90" fill="#451a03"/>
+        <path d="M 102 25 L 155 70 L 102 90 Z" fill="url(#sailGrad)"/>
+        <path d="M 98 40 L 55 75 L 98 90 Z" fill="url(#sailGrad)"/>
+        <rect x="102" y="10" width="30" height="18" fill="#dc2626"/>
+        <rect x="102" y="10" width="30" height="6" fill="#f59e0b"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      PETUALANGAN SEJARAH INTERAKTIF
+    </div>
+    <h1 class="hero-title">
+      <span class="title-line">Jelajahi Kisah</span>
+      <span class="title-line title-glow">Perlawanan</span>
+      <span class="title-line">Rakyat Minahasa</span>
+    </h1>
+    <p class="hero-desc">
+      Bergabunglah dalam petualangan seru melawan penjajah Spanyol pada tahun 1644.
+      Kumpulkan XP, selesaikan misi, dan jadilah <strong>Pahlawan Minahasa</strong>!
+    </p>
+    <div class="hero-buttons">
+      <button class="btn btn-hero-primary" onclick="startAdventure()">
+        <span class="btn-icon">🎮</span>
+        Mulai Petualangan
+      </button>
+      <button class="btn btn-hero-secondary" onclick="scrollToMateri()">
+        <span class="btn-icon">📖</span>
+        Baca Materi Dulu
+      </button>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hs-value">3</span>
+        <span class="hs-label">Bab Cerita</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hs-value">10</span>
+        <span class="hs-label">Misi Kuis</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hs-value">8</span>
+        <span class="hs-label">Karakter</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <span class="scroll-text">Scroll untuk lanjut</span>
+    <div class="scroll-mouse">
+      <div class="scroll-wheel"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MATERI SECTION ============ -->
+<section class="materi-section" id="materiSection">
+  <div class="container">
+
+    <div class="section-header">
+      <span class="section-chapter">📜 BAB I</span>
+      <h2 class="section-title">Kedatangan Spanyol di Minahasa</h2>
+      <div class="section-divider">
+        <span class="divider-line"></span>
+        <span class="divider-icon">⚔️</span>
+        <span class="divider-line"></span>
+      </div>
+    </div>
+
+    <div class="story-intro">
+      <div class="story-character">
+        <div class="char-avatar">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="48" fill="#1e3a5f" stroke="#22d3ee" stroke-width="3"/>
+            <circle cx="50" cy="42" r="18" fill="#fcd6b0"/>
+            <path d="M 32 42 Q 50 20 68 42 L 68 38 Q 50 15 32 38 Z" fill="#451a03"/>
+            <circle cx="42" cy="42" r="2.5" fill="#0b1120"/>
+            <circle cx="58" cy="42" r="2.5" fill="#0b1120"/>
+            <path d="M 44 52 Q 50 56 56 52" stroke="#7c2d12" stroke-width="2" fill="none"/>
+            <path d="M 30 70 Q 50 60 70 70 L 70 95 L 30 95 Z" fill="#8b1a1a"/>
+          </svg>
+        </div>
+        <div class="char-info">
+          <span class="char-name">Narator</span>
+          <span class="char-role">Pemandu Cerita</span>
+        </div>
+      </div>
+      <div class="story-bubble">
+        <p>Selamat datang, wahai petualang! Aku akan menemanimu menelusuri jejak sejarah Minahasa. Siapkan dirimu untuk kisah yang penuh makna...</p>
+      </div>
+    </div>
+
+    <div class="materi-card" data-reveal>
+      <div class="card-glow"></div>
+      <div class="materi-text">
+        <p>Sebelum Spanyol datang, bangsa <strong class="text-glow">Portugis</strong> sudah melakukan penyebaran agama Katolik di wilayah Minahasa. Kegiatan tersebut kemudian dilanjutkan oleh bangsa <strong class="text-glow">Spanyol sejak tahun 1580</strong>. Kedatangan Spanyol pada awalnya tidak langsung mendapat penolakan dari rakyat Minahasa. Hubungan antara rakyat Minahasa dengan orang-orang Spanyol pada awalnya berjalan dengan cukup baik.</p>
+      </div>
+
+      <div class="scene-container">
+        <div class="scene-badge">🖼️ Ilustrasi 1</div>
+        <svg class="scene-svg" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="sky1" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#1e3a5f"/>
+              <stop offset="50%" stop-color="#7c3aed"/>
+              <stop offset="100%" stop-color="#f59e0b"/>
+            </linearGradient>
+            <linearGradient id="sea1" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0c4a6e"/>
+              <stop offset="100%" stop-color="#082f49"/>
+            </linearGradient>
+            <radialGradient id="sun1" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0%" stop-color="#fef3c7"/>
+              <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect width="800" height="240" fill="url(#sky1)"/>
+          <circle cx="640" cy="180" r="70" fill="url(#sun1)"/>
+          <circle cx="640" cy="180" r="35" fill="#fef3c7"/>
+          <rect y="240" width="800" height="160" fill="url(#sea1)"/>
+          <path d="M 0 260 Q 100 255 200 260 T 400 260 T 600 260 T 800 260" stroke="#38bdf8" stroke-width="2" fill="none" opacity="0.4"/>
+          <path d="M 0 300 Q 100 295 200 300 T 400 300 T 600 300 T 800 300" stroke="#38bdf8" stroke-width="2" fill="none" opacity="0.3"/>
+
+          <g transform="translate(400, 240)">
+            <path d="M -100 40 L 100 40 L 80 70 L -80 70 Z" fill="#451a03"/>
+            <path d="M -100 40 L 100 40 L 90 48 L -90 48 Z" fill="#92400e"/>
+            <rect x="-3" y="-100" width="6" height="145" fill="#451a03"/>
+            <path d="M 3 -95 L 70 -40 L 3 10 Z" fill="#dc2626"/>
+            <path d="M 3 -95 L 70 -40 L 3 10 Z" fill="#fef3c7" opacity="0.2"/>
+            <path d="M -3 -70 L -55 -25 L -3 10 Z" fill="#fef3c7"/>
+            <rect x="3" y="-115" width="45" height="25" fill="#f59e0b"/>
+            <rect x="3" y="-115" width="45" height="8" fill="#dc2626"/>
+            <circle cx="15" cy="-95" r="5" fill="#dc2626"/>
+            <circle cx="35" cy="-95" r="5" fill="#dc2626"/>
+          </g>
+
+          <g transform="translate(180, 270)">
+            <circle cx="0" cy="-15" r="14" fill="#fcd6b0"/>
+            <path d="M -14 -15 Q 0 -35 14 -15 L 14 -10 Q 0 -28 -14 -10 Z" fill="#451a03"/>
+            <path d="M -16 0 Q 0 -8 16 0 L 18 55 L -18 55 Z" fill="#3b2314"/>
+            <rect x="12" y="15" width="14" height="18" fill="#8b1a1a"/>
+            <rect x="12" y="15" width="14" height="3" fill="#f59e0b"/>
+            <rect x="-14" y="55" width="9" height="30" fill="#1c1917"/>
+            <rect x="5" y="55" width="9" height="30" fill="#1c1917"/>
+          </g>
+
+          <g transform="translate(620, 275)">
+            <circle cx="0" cy="-15" r="14" fill="#c8956a"/>
+            <path d="M -14 -10 Q 0 -22 14 -10 L 14 -6 Q 0 -18 -14 -6 Z" fill="#dc2626"/>
+            <path d="M -16 0 Q 0 -8 16 0 L 18 55 L -18 55 Z" fill="#8b5a3a"/>
+            <path d="M -18 55 L 18 55 L 18 60 L -18 60 Z" fill="#5a3a2a"/>
+            <rect x="-14" y="55" width="9" height="30" fill="#78350f"/>
+            <rect x="5" y="55" width="9" height="30" fill="#78350f"/>
+          </g>
+
+          <circle cx="500" cy="245" r="3" fill="#fef3c7" opacity="0.7"/>
+          <circle cx="520" cy="235" r="2" fill="#fef3c7" opacity="0.5"/>
+          <circle cx="540" cy="250" r="2.5" fill="#fef3c7" opacity="0.6"/>
+
+          <text x="400" y="385" text-anchor="middle" fill="#22d3ee" font-family="Inter, sans-serif" font-size="16" font-weight="700">⚓ Kedatangan Portugis & Spanyol di Minahasa (1580)</text>
+        </svg>
+      </div>
+
+      <div class="materi-text">
+        <p>Pada tahun <strong class="text-glow">1606</strong>, sebuah armada yang dipimpin oleh <strong class="text-glow">Christoval Suarez</strong> mendarat di Minahasa. Kedatangan armada tersebut menjadi salah satu peristiwa penting dalam hubungan antara Spanyol dan masyarakat Minahasa. Pada awalnya, Spanyol berusaha menjalin hubungan dengan masyarakat setempat.</p>
+      </div>
+
+      <div class="materi-text">
+        <p>Selain kepentingan penyebaran agama Katolik, keberadaan bangsa Eropa di wilayah tersebut juga berkaitan dengan kepentingan mereka untuk <strong class="text-glow">memperluas pengaruh</strong>. Namun, seiring berjalannya waktu, hubungan yang awalnya baik mulai mengalami masalah akibat tindakan para tentara Spanyol.</p>
+      </div>
+
+      <div class="scene-container">
+        <div class="scene-badge">🖼️ Ilustrasi 2</div>
+        <svg class="scene-svg" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0f172a"/>
+              <stop offset="60%" stop-color="#7f1d1d"/>
+              <stop offset="100%" stop-color="#f59e0b"/>
+            </linearGradient>
+            <linearGradient id="sea2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#1e3a8a"/>
+              <stop offset="100%" stop-color="#0c4a6e"/>
+            </linearGradient>
+          </defs>
+          <rect width="800" height="240" fill="url(#sky2)"/>
+          <circle cx="200" cy="140" r="50" fill="#fef3c7" opacity="0.4"/>
+          <circle cx="200" cy="140" r="25" fill="#fef3c7" opacity="0.8"/>
+          <rect y="240" width="800" height="160" fill="url(#sea2)"/>
+          <path d="M 0 265 Q 100 260 200 265 T 400 265 T 600 265 T 800 265" stroke="#38bdf8" stroke-width="2" fill="none" opacity="0.5"/>
+
+          <g transform="translate(180, 250) scale(0.9)">
+            <path d="M -60 35 L 60 35 L 45 60 L -45 60 Z" fill="#451a03"/>
+            <rect x="-2" y="-80" width="4" height="115" fill="#2a1010"/>
+            <path d="M 2 -75 L 45 -30 L 2 5 Z" fill="#dc2626"/>
+            <path d="M -2 -55 L -40 -15 L -2 5 Z" fill="#f59e0b"/>
+            <rect x="2" y="-95" width="28" height="18" fill="#dc2626"/>
+            <rect x="2" y="-95" width="28" height="6" fill="#f59e0b"/>
+          </g>
+
+          <g transform="translate(400, 240) scale(1.1)">
+            <path d="M -65 40 L 65 40 L 50 65 L -50 65 Z" fill="#451a03"/>
+            <rect x="-2" y="-90" width="4" height="130" fill="#2a1010"/>
+            <path d="M 2 -85 L 50 -35 L 2 10 Z" fill="#dc2626"/>
+            <path d="M -2 -60 L -45 -20 L -2 10 Z" fill="#f59e0b"/>
+            <rect x="2" y="-105" width="32" height="20" fill="#dc2626"/>
+            <rect x="2" y="-105" width="32" height="7" fill="#f59e0b"/>
+            <circle cx="10" cy="-95" r="3" fill="#f59e0b"/>
+            <circle cx="26" cy="-95" r="3" fill="#f59e0b"/>
+          </g>
+
+          <g transform="translate(620, 255) scale(0.85)">
+            <path d="M -55 32 L 55 32 L 40 55 L -40 55 Z" fill="#451a03"/>
+            <rect x="-2" y="-75" width="4" height="105" fill="#2a1010"/>
+            <path d="M 2 -70 L 40 -28 L 2 5 Z" fill="#dc2626"/>
+            <rect x="2" y="-88" width="25" height="16" fill="#dc2626"/>
+          </g>
+
+          <circle cx="200" cy="270" r="3" fill="#38bdf8" opacity="0.6"/>
+          <circle cx="420" cy="280" r="2" fill="#38bdf8" opacity="0.5"/>
+          <circle cx="600" cy="275" r="3" fill="#38bdf8" opacity="0.6"/>
+
+          <text x="400" y="385" text-anchor="middle" fill="#22d3ee" font-family="Inter, sans-serif" font-size="16" font-weight="700">⚔️ Armada Christoval Suarez Mendarat (1606)</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <span class="section-chapter">🔥 BAB II</span>
+      <h2 class="section-title">Penyebab Munculnya Perlawanan</h2>
+      <div class="section-divider">
+        <span class="divider-line"></span>
+        <span class="divider-icon">💢</span>
+        <span class="divider-line"></span>
+      </div>
+    </div>
+
+    <div class="materi-card" data-reveal>
+      <div class="card-glow"></div>
+      <div class="materi-text">
+        <p>Pada awalnya, kegiatan penyebaran agama Katolik oleh kaum misionaris Spanyol tidak menjadi masalah besar bagi rakyat Minahasa. Namun, kegiatan tersebut kemudian <strong class="text-glow">terganggu oleh tindakan para tentara Spanyol</strong>. Tindakan tentara yang dianggap merugikan dan menyakiti masyarakat membuat hubungan antara rakyat Minahasa dan Spanyol semakin memburuk.</p>
+      </div>
+
+      <div class="scene-container">
+        <div class="scene-badge">🖼️ Ilustrasi 3</div>
+        <svg class="scene-svg" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="sky3" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#1e293b"/>
+              <stop offset="100%" stop-color="#7f1d1d"/>
+            </linearGradient>
+            <linearGradient id="ground3" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#451a03"/>
+              <stop offset="100%" stop-color="#1c1917"/>
+            </linearGradient>
+          </defs>
+          <rect width="800" height="300" fill="url(#sky3)"/>
+          <rect y="300" width="800" height="100" fill="url(#ground3)"/>
+
+          <g transform="translate(200, 180)">
+            <ellipse cx="0" cy="-30" rx="18" ry="22" fill="#94a3b8"/>
+            <path d="M -18 -25 L 0 -58 L 18 -25 Z" fill="#94a3b8"/>
+            <rect x="-20" y="-27" width="40" height="7" fill="#64748b"/>
+            <ellipse cx="0" cy="-8" rx="11" ry="13" fill="#fcd6b0"/>
+            <path d="M -16 5 Q 0 -3 16 5 L 20 75 L -20 75 Z" fill="#64748b"/>
+            <path d="M -16 5 Q 0 -3 16 5 L 20 75 L -20 75 Z" fill="#dc2626" opacity="0.3"/>
+            <ellipse cx="-20" cy="12" rx="12" ry="7" fill="#475569"/>
+            <ellipse cx="20" cy="12" rx="12" ry="7" fill="#475569"/>
+            <rect x="-14" y="75" width="10" height="35" fill="#1c1917"/>
+            <rect x="4" y="75" width="10" height="35" fill="#1c1917"/>
+            <line x1="22" y1="18" x2="65" y2="-25" stroke="#e2e8f0" stroke-width="4"/>
+            <rect x="20" y="14" width="7" height="12" fill="#78350f"/>
+            <line x1="-35" y1="-70" x2="-35" y2="45" stroke="#1c1917" stroke-width="3"/>
+            <rect x="-35" y="-70" width="32" height="22" fill="#f59e0b"/>
+            <rect x="-35" y="-70" width="32" height="7" fill="#dc2626"/>
+            <rect x="-35" y="-55" width="32" height="7" fill="#dc2626"/>
+          </g>
+
+          <g transform="translate(400, 175)">
+            <ellipse cx="0" cy="-30" rx="18" ry="22" fill="#94a3b8"/>
+            <path d="M -18 -25 L 0 -58 L 18 -25 Z" fill="#94a3b8"/>
+            <rect x="-20" y="-27" width="40" height="7" fill="#64748b"/>
+            <ellipse cx="0" cy="-8" rx="11" ry="13" fill="#fcd6b0"/>
+            <path d="M -16 5 Q 0 -3 16 5 L 20 75 L -20 75 Z" fill="#64748b"/>
+            <ellipse cx="-20" cy="12" rx="12" ry="7" fill="#475569"/>
+            <ellipse cx="20" cy="12" rx="12" ry="7" fill="#475569"/>
+            <rect x="-14" y="75" width="10" height="35" fill="#1c1917"/>
+            <rect x="4" y="75" width="10" height="35" fill="#1c1917"/>
+            <line x1="-30" y1="-45" x2="-30" y2="70" stroke="#78350f" stroke-width="4"/>
+            <path d="M -30 -58 L -22 -45 L -38 -45 Z" fill="#e2e8f0"/>
+          </g>
+
+          <g transform="translate(600, 185) scale(0.95)">
+            <ellipse cx="0" cy="-30" rx="18" ry="22" fill="#94a3b8"/>
+            <path d="M -18 -25 L 0 -58 L 18 -25 Z" fill="#94a3b8"/>
+            <rect x="-20" y="-27" width="40" height="7" fill="#64748b"/>
+            <ellipse cx="0" cy="-8" rx="11" ry="13" fill="#fcd6b0"/>
+            <path d="M -16 5 Q 0 -3 16 5 L 20 75 L -20 75 Z" fill="#64748b"/>
+            <ellipse cx="-20" cy="12" rx="12" ry="7" fill="#475569"/>
+            <ellipse cx="20" cy="12" rx="12" ry="7" fill="#475569"/>
+            <rect x="-14" y="75" width="10" height="35" fill="#1c1917"/>
+            <rect x="4" y="75" width="10" height="35" fill="#1c1917"/>
+          </g>
+
+          <text x="400" y="385" text-anchor="middle" fill="#22d3ee" font-family="Inter, sans-serif" font-size="16" font-weight="700">🛡️ Tentara Spanyol Mulai Merugikan Rakyat</text>
+        </svg>
+      </div>
+
+      <div class="materi-text">
+        <p>Ketidaksenangan rakyat Minahasa terhadap Spanyol semakin memuncak pada tahun <strong class="text-glow">1644</strong>. Pada tahun tersebut, tentara Spanyol memasuki sebuah desa di wilayah Minahasa. Dalam peristiwa tersebut, <strong class="text-glow">salah seorang pemimpin rakyat Minahasa di Tomohon dipukul dan dilukai</strong> oleh tentara Spanyol.</p>
+      </div>
+
+      <div class="scene-container">
+        <div class="scene-badge">🖼️ Ilustrasi 4</div>
+        <svg class="scene-svg" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="sky4" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#7f1d1d"/>
+              <stop offset="100%" stop-color="#1c1917"/>
+            </linearGradient>
+            <radialGradient id="drama4" cx="0.6" cy="0.5" r="0.5">
+              <stop offset="0%" stop-color="#dc2626" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#dc2626" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect width="800" height="400" fill="url(#sky4)"/>
+          <rect width="800" height="400" fill="url(#drama4)"/>
+          <rect y="320" width="800" height="80" fill="#0c0a09"/>
+
+          <g transform="translate(280, 160)">
+            <ellipse cx="0" cy="-30" rx="16" ry="20" fill="#94a3b8"/>
+            <path d="M -16 -25 L 0 -55 L 16 -25 Z" fill="#94a3b8"/>
+            <ellipse cx="0" cy="-8" rx="10" ry="12" fill="#fcd6b0"/>
+            <path d="M -14 5 Q 0 -3 14 5 L 18 80 L -18 80 Z" fill="#64748b"/>
+            <ellipse cx="-18" cy="12" rx="11" ry="6" fill="#475569"/>
+            <ellipse cx="18" cy="12" rx="11" ry="6" fill="#475569"/>
+            <rect x="-12" y="80" width="9" height="40" fill="#1c1917"/>
+            <rect x="4" y="80" width="9" height="40" fill="#1c1917"/>
+            <line x1="18" y1="25" x2="70" y2="-15" stroke="#e2e8f0" stroke-width="4"/>
+            <rect x="15" y="20" width="7" height="12" fill="#78350f"/>
+          </g>
+
+          <g transform="translate(520, 170)">
+            <path d="M -22 5 Q 0 -6 22 5 L 26 90 L -26 90 Z" fill="#8b5a3a"/>
+            <path d="M -22 5 Q 0 -6 22 5 L 26 90 L -26 90 Z" fill="#dc2626" opacity="0.2"/>
+            <path d="M -18 -10 Q 0 -22 18 -10 L 18 -5 Q 0 -17 -18 -5 Z" fill="#dc2626"/>
+            <circle cx="0" cy="-3" r="16" fill="#c8956a"/>
+            <line x1="-8" y1="-10" x2="6" y2="3" stroke="#dc2626" stroke-width="3"/>
+            <line x1="-5" y1="-13" x2="8" y2="0" stroke="#dc2626" stroke-width="2.5"/>
+            <circle cx="4" cy="7" r="2.5" fill="#dc2626"/>
+            <circle cx="8" cy="13" r="2" fill="#dc2626"/>
+            <circle cx="2" cy="17" r="2" fill="#dc2626"/>
+            <circle cx="6" cy="22" r="1.5" fill="#dc2626"/>
+            <path d="M -22 30 Q -32 18 -26 5" stroke="#c8956a" stroke-width="9" fill="none" stroke-linecap="round"/>
+            <rect x="-20" y="90" width="11" height="40" fill="#5a3a2a"/>
+            <rect x="9" y="90" width="11" height="40" fill="#5a3a2a"/>
+          </g>
+
+          <g transform="translate(460, 145)">
+            <line x1="-12" y1="-12" x2="-25" y2="-25" stroke="#fef3c7" stroke-width="4" stroke-linecap="round"/>
+            <line x1="0" y1="-15" x2="0" y2="-32" stroke="#fef3c7" stroke-width="4" stroke-linecap="round"/>
+            <line x1="12" y1="-12" x2="25" y2="-25" stroke="#fef3c7" stroke-width="4" stroke-linecap="round"/>
+          </g>
+
+          <text x="400" y="385" text-anchor="middle" fill="#22d3ee" font-family="Inter, sans-serif" font-size="16" font-weight="700">💢 Pemimpin Tomohon Dipukul & Dilukai (1644)</text>
+        </svg>
+      </div>
+
+      <div class="highlight-box">
+        <div class="hl-icon">💥</div>
+        <div class="hl-content">
+          <span class="hl-label">PEMICU PERLAWANAN</span>
+          <p>Tindakan tentara Spanyol terhadap seorang pemimpin di Tomohon dianggap sebagai sesuatu yang <strong>serius karena menyangkut harga diri masyarakat</strong>. Akibatnya, rakyat mulai melakukan perlawanan terhadap keberadaan Spanyol.</p>
+        </div>
+      </div>
+
+      <div class="materi-text">
+        <p>Dengan demikian, perlawanan rakyat Minahasa tidak muncul secara tiba-tiba. Perlawanan tersebut merupakan akibat dari hubungan yang semakin memburuk dan tindakan tentara Spanyol yang membuat rakyat merasa tidak senang.</p>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <span class="section-chapter">⚔️ BAB III</span>
+      <h2 class="section-title">Perlawanan Rakyat Minahasa 1644</h2>
+      <div class="section-divider">
+        <span class="divider-line"></span>
+        <span class="divider-icon">🔥</span>
+        <span class="divider-line"></span>
+      </div>
+    </div>
+
+    <div class="materi-card" data-reveal>
+      <div class="card-glow"></div>
+      <div class="materi-text">
+        <p>Pada tahun <strong class="text-glow">1644</strong>, rakyat Minahasa mulai <strong class="text-glow">mengangkat senjata untuk melawan Spanyol</strong>. Perlawanan tersebut dilakukan sebagai bentuk penolakan terhadap tindakan dan keberadaan tentara Spanyol yang dianggap telah merugikan masyarakat.</p>
+      </div>
+
+      <div class="scene-container">
+        <div class="scene-badge">🖼️ Ilustrasi 5</div>
+        <svg class="scene-svg" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="sky5" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f59e0b"/>
+              <stop offset="50%" stop-color="#dc2626"/>
+              <stop offset="100%" stop-color="#1c1917"/>
+            </linearGradient>
+            <linearGradient id="ground5" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#451a03"/>
+              <stop offset="100%" stop-color="#1c1917"/>
+            </linearGradient>
+          </defs>
+          <rect width="800" height="320" fill="url(#sky5)"/>
+          <circle cx="400" cy="150" r="60" fill="#fef3c7" opacity="0.3"/>
+          <circle cx="400" cy="150" r="35" fill="#fef3c7" opacity="0.5"/>
+          <rect y="320" width="800" height="80" fill="url(#ground5)"/>
+
+          <g transform="translate(150, 180)">
+            <circle cx="0" cy="-15" r="16" fill="#c8956a"/>
+            <path d="M -16 -10 Q 0 -24 16 -10 L 16 -5 Q 0 -19 -16 -5 Z" fill="#dc2626"/>
+            <path d="M -18 5 Q 0 -5 18 5 L 22 90 L -22 90 Z" fill="#8b5a3a"/>
+            <rect x="-16" y="90" width="11" height="45" fill="#5a3a2a"/>
+            <rect x="5" y="90" width="11" height="45" fill="#5a3a2a"/>
+            <line x1="-25" y1="-55" x2="-25" y2="75" stroke="#78350f" stroke-width="5"/>
+            <path d="M -25 -70 L -18 -55 L -32 -55 Z" fill="#e2e8f0"/>
+          </g>
+
+          <g transform="translate(400, 170)">
+            <circle cx="0" cy="-15" r="16" fill="#c8956a"/>
+            <path d="M -16 -10 Q 0 -24 16 -10 L 16 -5 Q 0 -19 -16 -5 Z" fill="#dc2626"/>
+            <path d="M -18 5 Q 0 -5 18 5 L 22 90 L -22 90 Z" fill="#8b5a3a"/>
+            <rect x="-16" y="90" width="11" height="45" fill="#5a3a2a"/>
+            <rect x="5" y="90" width="11" height="45" fill="#5a3a2a"/>
+            <path d="M 22 20 L 60 -20 L 62 -18 L 25 25 Z" fill="#e2e8f0"/>
+            <rect x="18" y="15" width="8" height="14" fill="#78350f"/>
+          </g>
+
+          <g transform="translate(650, 185)">
+            <circle cx="0" cy="-15" r="16" fill="#c8956a"/>
+            <path d="M -16 -10 Q 0 -24 16 -10 L 16 -5 Q 0 -19 -16 -5 Z" fill="#dc2626"/>
+            <path d="M -18 5 Q 0 -5 18 5 L 22 90 L -22 90 Z" fill="#8b5a3a"/>
+            <rect x="-16" y="90" width="11" height="45" fill="#5a3a2a"/>
+            <rect x="5" y="90" width="11" height="45" fill="#5a3a2a"/>
+            <path d="M -30 -25 Q 0 -45 30 -25" stroke="#78350f" stroke-width="3" fill="none"/>
+            <line x1="-30" y1="-25" x2="30" y2="-25" stroke="#78350f" stroke-width="2"/>
+            <line x1="0" y1="-45" x2="0" y2="-25" stroke="#e2e8f0" stroke-width="2"/>
+          </g>
+
+          <circle cx="150" cy="60" r="3" fill="#fef3c7" opacity="0.7"/>
+          <circle cx="400" cy="40" r="3" fill="#fef3c7" opacity="0.7"/>
+          <circle cx="650" cy="70" r="3" fill="#fef3c7" opacity="0.7"/>
+
+          <text x="400" y="385" text-anchor="middle" fill="#22d3ee" font-family="Inter, sans-serif" font-size="16" font-weight="700">⚔️ Rakyat Minahasa Mengangkat Senjata (1644)</text>
+        </svg>
+      </div>
+
+      <div class="materi-text">
+        <p>Rakyat Minahasa kemudian berusaha mengusir Spanyol dari wilayah mereka. Dalam menghadapi Spanyol, orang-orang Minahasa <strong class="text-glow">meminta bantuan kepada Belanda</strong>. Bantuan tersebut digunakan untuk memperkuat perlawanan terhadap Spanyol.</p>
+      </div>
+
+      <div class="scene-container">
+        <div class="scene-badge">🖼️ Ilustrasi 6</div>
+        <svg class="scene-svg" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="sky6" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0c4a6e"/>
+              <stop offset="60%" stop-color="#7c3aed"/>
+              <stop offset="100%" stop-color="#f59e0b"/>
+            </linearGradient>
+            <linearGradient id="sea6" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#082f49"/>
+              <stop offset="100%" stop-color="#0c0a09"/>
+            </linearGradient>
+          </defs>
+          <rect width="800" height="260" fill="url(#sky6)"/>
+          <circle cx="640" cy="140" r="45" fill="#fef3c7" opacity="0.4"/>
+          <rect y="260" width="800" height="140" fill="url(#sea6)"/>
+          <path d="M 0 280 Q 100 275 200 280 T 400 280 T 600 280 T 800 280" stroke="#38bdf8" stroke-width="2" fill="none" opacity="0.4"/>
+
+          <g transform="translate(400, 255)">
+            <path d="M -90 40 L 90 40 L 70 65 L -70 65 Z" fill="#1c1917"/>
+            <path d="M -90 40 L 90 40 L 80 47 L -80 47 Z" fill="#451a03"/>
+            <rect x="-3" y="-100" width="6" height="145" fill="#1c1917"/>
+            <path d="M 3 -95 L 60 -35 L 3 10 Z" fill="#dc2626"/>
+            <path d="M 3 -95 L 60 -35 L 3 10 Z" fill="#fff" opacity="0.15"/>
+            <path d="M -3 -70 L -50 -20 L -3 10 Z" fill="#fff"/>
+            <path d="M -3 -70 L -50 -20 L -3 10 Z" fill="#2563eb" opacity="0.3"/>
+            <rect x="3" y="-115" width="42" height="28" fill="#dc2626"/>
+            <rect x="3" y="-115" width="42" height="9" fill="#f59e0b"/>
+            <rect x="3" y="-97" width="42" height="9" fill="#2563eb"/>
+          </g>
+
+          <g transform="translate(150, 280)">
+            <circle cx="0" cy="-15" r="14" fill="#c8956a"/>
+            <path d="M -14 -10 Q 0 -22 14 -10 L 14 -6 Q 0 -18 -14 -6 Z" fill="#dc2626"/>
+            <path d="M -16 5 Q 0 -3 16 5 L 18 60 L -18 60 Z" fill="#8b5a3a"/>
+            <rect x="-14" y="60" width="9" height="30" fill="#5a3a2a"/>
+            <rect x="5" y="60" width="9" height="30" fill="#5a3a2a"/>
+            <path d="M 16 -5 L 30 -25 L 32 -22 L 18 0 Z" fill="#c8956a"/>
+          </g>
+
+          <text x="400" y="385" text-anchor="middle" fill="#22d3ee" font-family="Inter, sans-serif" font-size="16" font-weight="700">🤝 Rakyat Minahasa Meminta Bantuan Belanda</text>
+        </svg>
+      </div>
+
+      <div class="materi-text">
+        <p>Perlawanan rakyat Minahasa bersama bantuan Belanda akhirnya berhasil membuat <strong class="text-glow">Spanyol terusir dari Minahasa</strong>. Peristiwa tersebut menjadi salah satu bagian penting dalam sejarah perjuangan masyarakat Minahasa di Sulawesi Utara.</p>
+
+        <p>Perlawanan tahun 1644 menunjukkan bahwa masyarakat Minahasa tidak tinggal diam ketika merasa dirugikan. Mereka melakukan perlawanan untuk mempertahankan kepentingan dan harga diri masyarakat mereka.</p>
+      </div>
+
+      <div class="timeline-box">
+        <h3 class="timeline-title">📅 Garis Waktu Peristiwa Penting</h3>
+        <div class="timeline-items">
+          <div class="timeline-item">
+            <div class="tl-year">1580</div>
+            <div class="tl-content">
+              <div class="tl-dot"></div>
+              <p>Spanyol melanjutkan penyebaran agama Katolik yang sebelumnya dilakukan Portugis di Minahasa.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="tl-year">1606</div>
+            <div class="tl-content">
+              <div class="tl-dot"></div>
+              <p>Armada yang dipimpin Christoval Suarez mendarat di Minahasa.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="tl-year">1644</div>
+            <div class="tl-content">
+              <div class="tl-dot"></div>
+              <p>Rakyat Minahasa mengangkat senjata melawan Spanyol setelah pemimpin mereka di Tomohon dipukul dan dilukai.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="tl-year">1644</div>
+            <div class="tl-content">
+              <div class="tl-dot"></div>
+              <p>Rakyat Minahasa meminta bantuan Belanda, dan Spanyol akhirnya terusir dari Minahasa.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ QUIZ SECTION ============ -->
+<section class="quiz-section" id="quizSection">
+  <div class="container">
+
+    <div class="section-header">
+      <span class="section-chapter">🎮 MISI PERTEMPURAN</span>
+      <h2 class="section-title">Kuis Perlawanan Rakyat Minahasa</h2>
+      <div class="section-divider">
+        <span class="divider-line"></span>
+        <span class="divider-icon">⚔️</span>
+        <span class="divider-line"></span>
+      </div>
+      <p class="section-subtitle">Bantu para pahlawan Minahasa menjawab pernyataan dari para karakter di bawah ini!</p>
+    </div>
+
+    <div class="quiz-start" id="quizStart">
+      <div class="quiz-start-card">
+        <div class="qs-emblem">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="qsGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#22d3ee"/>
+                <stop offset="100%" stop-color="#f59e0b"/>
+              </linearGradient>
+            </defs>
+            <circle cx="50" cy="50" r="42" fill="none" stroke="url(#qsGrad)" stroke-width="4"/>
+            <text x="50" y="63" text-anchor="middle" font-size="40" font-family="Arial">⚔️</text>
+          </svg>
+        </div>
+        <h3>Misi Pertempuran Sejarah</h3>
+        <p>10 karakter akan menantangmu dengan pernyataan sejarah. Jawab dengan tepat untuk mengumpulkan XP dan menyelamatkan Minahasa!</p>
+
+        <div class="qs-features">
+          <div class="qs-feature">
+            <span class="qs-f-icon">👥</span>
+            <span class="qs-f-label">10 Karakter</span>
+          </div>
+          <div class="qs-feature">
+            <span class="qs-f-icon">⚖️</span>
+            <span class="qs-f-label">5 Benar : 5 Salah</span>
+          </div>
+          <div class="qs-feature">
+            <span class="qs-f-icon">⭐</span>
+            <span class="qs-f-label">Dapat XP</span>
+          </div>
+          <div class="qs-feature">
+            <span class="qs-f-icon">🏆</span>
+            <span class="qs-f-label">Naik Level</span>
+          </div>
+        </div>
+
+        <button class="btn btn-quiz-start" onclick="startQuiz()">
+          <span>🚀</span> Mulai Misi Sekarang
+        </button>
+      </div>
+    </div>
+
+    <div class="quiz-arena" id="quizArena" style="display:none;">
+      <div class="arena-progress">
+        <div class="ap-info">
+          <span class="ap-quest">Misi <span id="currentQuest">1</span>/10</span>
+          <span class="ap-xp">+<span id="earnedXP">0</span> XP</span>
+        </div>
+        <div class="ap-bar">
+          <div class="ap-fill" id="arenaProgressFill"></div>
+        </div>
+      </div>
+
+      <div class="character-stage" id="characterStage"></div>
+
+      <div class="question-panel">
+        <div class="qp-header">
+          <span class="qp-badge" id="qpBadge">Pernyataan #1</span>
+          <div class="qp-dots" id="qpDots"></div>
+        </div>
+
+        <p class="qp-text" id="qpText"></p>
+
+        <div class="qp-options" id="qpOptions">
+          <button class="qp-btn qp-benar" onclick="answerQuestion(true)">
+            <div class="qp-btn-inner">
+              <span class="qp-mark">✓</span>
+              <div class="qp-btn-text">
+                <span class="qp-label">BENAR</span>
+                <span class="qp-desc">Sesuai fakta sejarah</span>
+              </div>
+            </div>
+          </button>
+          <button class="qp-btn qp-salah" onclick="answerQuestion(false)">
+            <div class="qp-btn-inner">
+              <span class="qp-mark">✕</span>
+              <div class="qp-btn-text">
+                <span class="qp-label">SALAH</span>
+                <span class="qp-desc">Tidak sesuai fakta</span>
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <div class="qp-feedback" id="qpFeedback" style="display:none;">
+          <div class="feedback-icon" id="feedbackIcon">✓</div>
+          <div class="feedback-content">
+            <span class="feedback-title" id="feedbackTitle">Tepat!</span>
+            <p class="feedback-text" id="feedbackText"></p>
+          </div>
+          <button class="feedback-next" id="feedbackNext" onclick="nextQuest()">
+            Lanjut →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-result" id="quizResult" style="display:none;">
+      <div class="result-card-game">
+        <div class="result-crown">👑</div>
+        <h3 class="result-heading" id="resultHeading">Misi Selesai!</h3>
+
+        <div class="result-trophy">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="trophyGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#f59e0b"/>
+                <stop offset="100%" stop-color="#dc2626"/>
+              </linearGradient>
+            </defs>
+            <circle cx="100" cy="100" r="90" fill="none" stroke="url(#trophyGrad)" stroke-width="4" stroke-dasharray="10 6"/>
+            <circle cx="100" cy="100" r="75" fill="rgba(245,158,11,0.1)"/>
+            <text x="100" y="130" text-anchor="middle" font-size="80" font-family="Arial">🏆</text>
+          </svg>
+        </div>
+
+        <div class="result-score-display">
+          <span class="rsd-value" id="finalScoreValue">0</span>
+          <span class="rsd-label">dari 10</span>
+        </div>
+
+        <div class="result-rating" id="resultRating"></div>
+        <p class="result-desc" id="resultDesc"></p>
+
+        <div class="result-mini-stats">
+          <div class="rms-item rms-correct">
+            <span class="rms-icon">✅</span>
+            <span class="rms-value" id="correctStat">0</span>
+            <span class="rms-label">Benar</span>
+          </div>
+          <div class="rms-item rms-wrong">
+            <span class="rms-icon">❌</span>
+            <span class="rms-value" id="wrongStat">0</span>
+            <span class="rms-label">Salah</span>
+          </div>
+          <div class="rms-item rms-xp">
+            <span class="rms-icon">⭐</span>
+            <span class="rms-value" id="xpStat">0</span>
+            <span class="rms-label">XP</span>
+          </div>
+        </div>
+
+        <div class="result-actions-game">
+          <button class="btn btn-retry" onclick="restartQuiz()">🔄 Ulangi Misi</button>
+          <button class="btn btn-review" onclick="toggleReview()">📖 Pembahasan</button>
+        </div>
+
+        <div class="review-panel" id="reviewPanel" style="display:none;">
+          <h4>📋 Pembahasan Lengkap</h4>
+          <div class="review-items" id="reviewItems"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ QR SECTION ============ -->
+<section class="qr-section" id="qrSection">
+  <div class="container">
+    <div class="qr-wrapper">
+      <div class="qr-info">
+        <span class="qr-badge">📱 AKSES MOBILE</span>
+        <h3>Scan & Main di HP</h3>
+        <p>Bagikan QR code ini ke temanmu agar bisa mengerjakan kuis langsung dari ponsel!</p>
+        <ul class="qr-list">
+          <li>✅ Responsif di semua ukuran layar</li>
+          <li>✅ Bisa dikerjakan kapan saja</li>
+          <li>✅ Hasil langsung terlihat</li>
+        </ul>
+      </div>
+      <div class="qr-card">
+        <div id="qrcode"></div>
+        <p class="qr-url-text" id="qrUrlText"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="game-footer">
+  <div class="footer-content">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="30,5 38,22 56,22 42,34 48,52 30,42 12,52 18,34 4,22 22,22" fill="#f59e0b"/>
+          <circle cx="30" cy="30" r="6" fill="#0b1120"/>
+        </svg>
+        <span>MINAHASA QUEST</span>
+      </div>
+      <p>Petualangan sejarah interaktif untuk generasi muda Indonesia.</p>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 <strong>Minahasa Quest</strong> — Media Pembelajaran Sejarah Interaktif</p>
+    </div>
+  </div>
+</footer>
+
+<div class="confetti-container" id="confettiContainer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="audio.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
